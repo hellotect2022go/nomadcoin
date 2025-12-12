@@ -2,20 +2,17 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/hellotect2022go/nomadcoin/blockchain"
+	"log"
+	"net/http"
 )
 
-func main() {
-	chain := blockchain.GetBlockChain()
-	chain.AddBlock("Secon Block")
-	chain.AddBlock("Third Block")
-	chain.AddBlock("Fourth Block")
+const port string = ":4000"
 
-	for _, block := range blockchain.AllBlocks() {
-		fmt.Printf("Data: %s\n", block.Data)
-		fmt.Printf("Hash: %s\n", block.Hash)
-		fmt.Printf("PrevHash: %s\n", block.PrevHash)
-	}
+func main() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "hello from home!!")
+	})
+	fmt.Printf("Listening on http://localhost%s\n", port)
+	log.Fatal(http.ListenAndServe(port, nil)) // 프로그램이 Exit(1) : {error 로 인해 종료되는 경우} 로그를 출력해줌
 
 }

@@ -23,6 +23,23 @@ B3
 B4 
  b4hash = (data + b3Hash)
 
+
+2. 
+GO - Server Side Rendering Web Service
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 persistence : DB
 
 P2P
