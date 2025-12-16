@@ -9,8 +9,9 @@ import (
 	"github.com/hellotect2022go/nomadcoin/blockchain"
 )
 
+var port string
+
 const (
-	port        string = ":4000"
 	templateDir string = "explorer/template/"
 )
 
@@ -43,11 +44,13 @@ func add(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Start() {
+func Start(aPort int) {
+	handler := http.NewServeMux()
+	port = fmt.Sprintf(":%d", aPort)
 	templates = template.Must(template.ParseGlob(templateDir + "pages/*.gohtml"))
 	templates = template.Must(templates.ParseGlob(templateDir + "partials/*.gohtml"))
-	http.HandleFunc("/", home)
-	http.HandleFunc("/add", add)
+	handler.HandleFunc("/", home)
+	handler.HandleFunc("/add", add)
 	fmt.Printf("Listening on http://localhost%s\n", port)
-	log.Fatal(http.ListenAndServe(port, nil)) // 프로그램이 Exit(1) : {error 로 인해 종료시킴} 로그를 출력해줌
+	log.Fatal(http.ListenAndServe(port, handler)) // 프로그램이 Exit(1) : {error 로 인해 종료시킴} 로그를 출력해줌
 }
