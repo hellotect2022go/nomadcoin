@@ -54,7 +54,6 @@ func documentation(rw http.ResponseWriter, r *http.Request) {
 			Method:      "GET",
 			Description: "See A Block"},
 	}
-	rw.Header().Add("Content-Type", "application/json")
 	// b, err := json.Marshal(data)
 	// utils.HandleErr(err)
 	// fmt.Fprintf(rw, "%s", b)
@@ -65,7 +64,6 @@ func documentation(rw http.ResponseWriter, r *http.Request) {
 func blocks(rw http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		rw.Header().Add("Content-Type", "application/json")
 		json.NewEncoder(rw).Encode(blockchain.AllBlocks())
 	case "POST":
 		var addBlockBody addBlockBody
@@ -91,14 +89,21 @@ func block(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-func Start(aPort int) {
-	handler := mux.NewRouter()
+func jsonContentTypeMiddleWare(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
+}
 
+func Start(aPort int) {
 	port = fmt.Sprintf(":%d", aPort)
-	handler.HandleFunc("/", documentation).Methods("GET")
-	handler.HandleFunc("/blocks", blocks).Methods("GET", "POST")
-	handler.HandleFunc("/blocks/{height:[0-9]+}", block).Methods("GET")
+	router := mux.NewRouter()
+	router.Use(jsonContentTypeMiddleWare)
+	router.HandleFunc("/", documentation).Methods("GET")
+	router.HandleFunc("/blocks", blocks).Methods("GET", "POST")
+	router.HandleFunc("/blocks/{height:[0-9]+}", block).Methods("GET")
 	fmt.Printf("Listening on http://localhost%s\n", port)
-	log.Fatal(http.ListenAndServe(port, handler))
+	log.Fatal(http.ListenAndServe(port, router))
 
 }
