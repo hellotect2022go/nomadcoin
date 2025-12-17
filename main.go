@@ -1,11 +1,9 @@
 package main
 
 import (
-	"github.com/hellotect2022go/nomadcoin/rest"
+	"github.com/hellotect2022go/nomadcoin/cli"
 )
 
 func main() {
-	//go explorer.Start(5000)
-	rest.Start(4000)
-
+	cli.Start()
 }
