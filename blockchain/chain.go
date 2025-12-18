@@ -8,9 +8,15 @@ import (
 	"github.com/hellotect2022go/nomadcoin/utils"
 )
 
+const (
+	defaultDifficulty  int = 2
+	difficultyInterval int = 5 //  hash 앞에 오게될 0개의 n 갯수로 난이도 조절
+)
+
 type blockChain struct {
-	NewestHash string `json:"newestHash"`
-	Height     int    `json:"height"`
+	NewestHash        string `json:"newestHash"`
+	Height            int    `json:"height"`
+	CurrentDifficulty int    `json:"currentDifficulty"`
 }
 
 func (bc *blockChain) persist() {
@@ -48,10 +54,22 @@ func (bc *blockChain) Blocks() []*Block {
 	return blocks
 }
 
+func (bc *blockChain) difficulty() int {
+	if bc.Height == 0 {
+		return defaultDifficulty
+	} else if bc.Height%difficultyInterval == 0 {
+
+	} else {
+		return bc.CurrentDifficulty
+	}
+}
+
 func GetBlockChain() *blockChain {
 	if bc == nil {
 		once.Do(func() {
-			bc = &blockChain{"", 0}
+			bc = &blockChain{
+				Height: 0,
+			}
 			//search for checkpoint on the db
 			// restore bc from byte
 			checkpoint := db.Checkpoint()

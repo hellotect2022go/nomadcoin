@@ -1,16 +1,13 @@
 package blockchain
 
 import (
-	"crypto/sha256"
 	"errors"
-	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hellotect2022go/nomadcoin/db"
 	"github.com/hellotect2022go/nomadcoin/utils"
 )
-
-const difficulty int = 2 //  hash 앞에 오게될 0개의 n 갯수로 난이도 조절
 
 type Block struct {
 	Data     string `json:"data"`
@@ -20,6 +17,7 @@ type Block struct {
 	// 자격증명용
 	Difficulty int `json:"difficulty"` //  hash 앞에 오게될 0개의 n 갯수로 조절
 	Nonce      int `json:"nonce"`      // 블록체인에서 채굴자들이 수정할 수 있는 유일한 값
+	Timestamp  int `json:"timestamp"`
 }
 
 var ErrNotFound = errors.New("block not found")
@@ -45,9 +43,8 @@ func FindBlock(hash string) (*Block, error) {
 func (b *Block) mine() {
 	target := strings.Repeat("0", b.Difficulty)
 	for {
-		blockAsString := fmt.Sprint(b)
-		hash := fmt.Sprintf("%x", sha256.Sum256([]byte(blockAsString)))
-		fmt.Printf("Block As String: %s\nHash: %s\nTarget: %s\nNonce: %d\n\n\n", blockAsString, hash, target, b.Nonce)
+		b.Timestamp = int(time.Now().Unix())
+		hash := utils.Hash(b)
 		if strings.HasPrefix(hash, target) {
 			b.Hash = hash
 			break
@@ -64,7 +61,7 @@ func createBlock(data string, prevHash string, height int) *Block {
 		Hash:       "",
 		PrevHash:   prevHash,
 		Height:     height,
-		Difficulty: difficulty,
+		Difficulty: GetBlockChain().difficulty(),
 		Nonce:      0,
 	}
 
