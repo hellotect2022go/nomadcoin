@@ -20,5 +20,12 @@
 * **5. [Go] BoltDB**
     * - blockchain 의 persistence 속성부여
     * - key-value DB 사용
+    * - window 에서 boltbrowser 설치 방법 
+    go install github.com/br0xen/boltbrowser@latest      
+    boltbrowser blockChain.db
+    * - boltweb 설치 및 실행방법
+    go install github.com/evnix/boltdbweb@latest
+    boltdbweb --db-name=blockChain.db --port=8888
+    boltdbweb --db-name=<DBfilename>[required] --port=<port>[optional] --static-path=<static-path>[optional]
 
     sdfa

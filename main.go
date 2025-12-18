@@ -1,10 +1,15 @@
 package main
 
 import (
-	"github.com/hellotect2022go/nomadcoin/blockchain"
+	"github.com/hellotect2022go/nomadcoin/cli"
+	"github.com/hellotect2022go/nomadcoin/db"
 )
 
 func main() {
-	//cli.Start()
-	blockchain.GetBlockChain()
+	defer db.Close()
+	cli.Start()
+	//blockchain.GetBlockChain()
+	//blockchain.GetBlockChain().AddBlock("First")
+	//blockchain.GetBlockChain().AddBlock("Second")
+	//blockchain.GetBlockChain().AddBlock("Third")
 }
