@@ -28,4 +28,24 @@
     boltdbweb --db-name=blockChain.db --port=8888
     boltdbweb --db-name=<DBfilename>[required] --port=<port>[optional] --static-path=<static-path>[optional]
 
-    sdfa
+* **6. [POW & Mining] Proof of Work & Mining**
+작업증명 : n 개의 0으로 시작하는 hash 를 찾는다
+nonce : 사용자가 block 에서 변경가능한 유일한 값 
+작업증명의 난이도를 알려주는 간단한 예시코드 
+``` go
+difficulty := 6
+	target := strings.Repeat("0", difficulty)
+	nonce := 1
+
+	for {
+		hash := fmt.Sprintf("%x", sha256.Sum256([]byte("hello"+fmt.Sprint(nonce))))
+		fmt.Println(hash)
+
+		if strings.HasPrefix(hash, target) {
+			fmt.Println("찾았습니당!!!", nonce)
+			return
+		} else {
+			nonce++
+		}
+	}
+```
